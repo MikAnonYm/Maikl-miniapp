@@ -1,36 +1,39 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Французский с MAiKL.</title>
-<link rel="stylesheet" href="styles.css">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f7f4" />
+  <title>MAiKL. — Mini App</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<main class="app">
-<header class="hero">
-<div class="brand">♛ MAiKL.</div>
-<h1>Французский с MAiKL.</h1>
-<p>Говорить по-французски — это хорошо.<br>А хорошо говорить по-французски — ещё лучше!</p>
-</header>
-
-<button class="booking" data-url="https://204515.журналзаписей.рф/">
-<span>📅</span><div><b>Записаться</b><small>Выбрать услугу и свободное время</small></div>
-</button>
-
-<section class="grid">
-<button class="card" data-page="speaking">⭐<b>Разговорный с MAiKL.</b><small>Практика без сценариев</small></button>
-<button class="card" data-page="lessons">📚<b>Уроки</b><small>B1/B2 · C1/C2 · экзамены</small></button>
-<button class="card" data-page="consultation">🗣<b>Консультация</b><small>15 · 30 · 60 минут</small></button>
-<button class="card" data-page="contact">📱<b>MAiKL. на связи</b><small>Звонки, сообщения и голосовые</small></button>
-<button class="card wide" data-page="plus">💎<b>MAiKL.+</b><small>Подписка и уровни доступа</small></button>
-</section>
-
-<button class="faq" data-page="faq">❓ ЧаВо</button>
-</main>
-
-<dialog id="sheet"><div class="sheet"><button class="close">×</button><div id="content"></div></div></dialog>
-<script src="app.js"></script>
+  <div class="bg-brush brush-a"></div>
+  <div class="bg-brush brush-b"></div>
+  <main id="app" class="app-shell" aria-live="polite"></main>
+  <template id="home-template">
+    <section class="screen">
+      <header class="brand-head">
+        <div>
+          <div class="eyebrow">ФРАНЦУЗСКИЙ С</div>
+          <h1 class="brand">MAiKL.</h1>
+          <p class="tagline">Французский. По-настоящему.</p>
+        </div>
+        <div class="crown" aria-hidden="true">♛</div>
+      </header>
+      <div class="intro">
+        <h2>ЧТО ТЫ ХОЧЕШЬ?</h2>
+        <p>Выбери формат — дальше покажу только нужные шаги.</p>
+      </div>
+      <div class="cards">
+        <button class="nav-card" data-route="zoom"><span class="icon">💻</span><span><strong>ВСТРЕТИТЬСЯ С MAiKL. В ZOOM</strong><small>Уроки, разговорный, консультация</small></span><span class="chev">›</span></button>
+        <button class="nav-card" data-route="phone"><span class="icon">📱</span><span><strong>MAiKL. В ТВОЁМ СМАРТФОНЕ</strong><small>Практика, сообщения, звонки, консультация</small></span><span class="chev">›</span></button>
+        <button class="nav-card" data-route="services"><span class="icon">🎟</span><span><strong>УСЛУГИ</strong><small>Для студентов, компаний, школ и переводчиков</small></span><span class="chev">›</span></button>
+        <button class="nav-card" data-route="plus"><span class="icon">💎</span><span><strong>MAiKL.+</strong><small>Закрытый Telegram • 250 ⭐ / месяц</small></span><span class="chev">›</span></button>
+      </div>
+    </section>
+  </template>
+  <script src="app.js"></script>
 </body>
 </html>
