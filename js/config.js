@@ -18,7 +18,7 @@ window.MAIKL_CONFIG = {
     schools: {title:"Для языковых школ", telegram:"https://t.me/maikl_prod/23/234", vk:"https://vk.ru/market/product/127979-uslugi-dlya-yazykovykh-shkol-177750329-13886368"},
     translators: {title:"Для переводчиков", telegram:"https://t.me/maikl_prod/23/235", vk:"https://vk.ru/market/product/127757-uslugi-dlya-perevodchikov-177750329-13886355"}
   },
-  maiklPlusTelegramUrl: "", // lien payant 250 Stars à connecter via le bot Telegram
+  maiklPlusTelegramUrl: "https://t.me/+OLayyhn3yRQ3MWFi", // abonnement MAiKL.+ · 250 Stars / mois
   maiklPlusVkUrl: "https://vk.ru/maikl_prod?analytics_screen=group&source=donut_banner&w=donut_payment-177750329"
 };
 window.MAIKL_SERVICES = [
