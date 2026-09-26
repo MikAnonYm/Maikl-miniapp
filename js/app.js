@@ -44,6 +44,41 @@ function services(){const items=[
 function serviceLinks(){const x=CFG.serviceLinks[state.product];if(!x)return services();render(`<h1 class="page-title">${esc(x.title)}</h1><p class="lead">Откройте описание услуги там, где вам удобнее.</p><div class="platform-links"><a class="platform-card" href="${x.telegram}" target="_blank">${officialIcon("telegram","platform-picto")}<span><strong>Telegram</strong><small>Открыть услугу напрямую</small></span><span class="arrow">›</span></a><a class="platform-card" href="${x.vk}" target="_blank">${officialIcon("vk","platform-picto")}<span><strong>VK</strong><small>Открыть товар напрямую</small></span><span class="arrow">›</span></a></div>`)}
 function plus(){const tgReady=Boolean(CFG.maiklPlusTelegramUrl);render(`<h1 class="page-title">MAiKL.+</h1><p class="lead">Выберите удобный способ подписки.</p><div class="grid service-grid" style="margin-top:18px"><${tgReady?'a':'div'} class="card service-card plus-platform${tgReady?'':' disabled-card'}" ${tgReady?`href="${CFG.maiklPlusTelegramUrl}" target="_blank"`:''}>${officialIcon("telegram","platform-picto")}<span class="plus-copy"><strong>Telegram</strong><em>Подписка на MAiKL.+</em><small><b>250 ⭐ / 30 дней</b>${tgReady?'':' · ссылка будет подключена через MAiKL. Ассистент'}</small></span><span class="arrow">${tgReady?'›':'·'}</span></${tgReady?'a':'div'}><a class="card service-card plus-platform" href="${CFG.maiklPlusVkUrl}" target="_blank">${officialIcon("vk","platform-picto")}<span class="plus-copy"><strong>VK Donut</strong><em>Выберите подходящий вариант поддержки.</em><small><b>4 уровня подписки</b></small></span><span class="arrow">›</span></a></div>`)}
 function view(){switch(state.route){case"home":return home();case"lessons":return list("Уроки французского",SERVICES.filter(x=>x.section==="lessons"));case"conversation":return list("Разговорный с MAiKL.",SERVICES.filter(x=>x.section==="conversation"));case"consult":return consultMenu();case"consultZoom":return list("Консультация · Zoom",SERVICES.filter(x=>x.section==="consult_zoom"));case"consultPhoneCall":return list("Консультация · Аудиозвонок",SERVICES.filter(x=>x.section==="consult_phone_call"));case"consultPhoneMessages":return list("Консультация · Сообщения + голосовые",SERVICES.filter(x=>x.section==="consult_phone_messages"));case"phone":return phoneMenu();case"phoneCall":return list("MAiKL. на связи · Аудиозвонок",SERVICES.filter(x=>x.section==="phone_call"));case"phoneMessages":return list("MAiKL. на связи · Сообщения + голосовые",SERVICES.filter(x=>x.section==="phone_messages"));case"calendar":return calendar();case"booking":return booking();case"my":return mine();case"services":return services();case"serviceLinks":return serviceLinks();case"plus":return plus();case"success":return success();default:return home()}}
-let swipeStart=null;document.addEventListener("touchstart",e=>{if(e.touches.length!==1)return;const t=e.touches[0];if(t.clientX<=28)swipeStart={x:t.clientX,y:t.clientY,time:Date.now()};},{passive:true});document.addEventListener("touchend",e=>{if(!swipeStart||!e.changedTouches.length)return;const t=e.changedTouches[0],dx=t.clientX-swipeStart.x,dy=Math.abs(t.clientY-swipeStart.y),dt=Date.now()-swipeStart.time;swipeStart=null;if(state.route!=="home"&&dx>75&&dy<70&&dt<900)history.back();},{passive:true});
+// Mobile navigation: swipe right to go back.
+// We listen across the WebView instead of only the first few pixels of the left edge:
+// Telegram/Android can reserve that edge gesture before the page receives it.
+let swipeStart=null,swipeHorizontal=false;
+function canSwipeBack(){return state.route!=="home"}
+document.addEventListener("touchstart",e=>{
+  if(e.touches.length!==1||!canSwipeBack())return;
+  const target=e.target;
+  if(target?.closest?.("input, textarea, select"))return;
+  const t=e.touches[0];
+  swipeStart={x:t.clientX,y:t.clientY,time:Date.now()};
+  swipeHorizontal=false;
+},{passive:true});
+document.addEventListener("touchmove",e=>{
+  if(!swipeStart||e.touches.length!==1)return;
+  const t=e.touches[0],dx=t.clientX-swipeStart.x,dy=Math.abs(t.clientY-swipeStart.y);
+  if(dx>18&&dx>dy*1.35){swipeHorizontal=true;e.preventDefault()}
+},{passive:false});
+document.addEventListener("touchend",e=>{
+  if(!swipeStart||!e.changedTouches.length)return;
+  const t=e.changedTouches[0],dx=t.clientX-swipeStart.x,dy=Math.abs(t.clientY-swipeStart.y),dt=Date.now()-swipeStart.time;
+  const goBack=canSwipeBack()&&swipeHorizontal&&dx>80&&dx>dy*1.5&&dt<1000;
+  swipeStart=null;swipeHorizontal=false;
+  if(goBack){e.preventDefault();history.back()}
+},{passive:false});
+document.addEventListener("touchcancel",()=>{swipeStart=null;swipeHorizontal=false},{passive:true});
+
+// Keep Telegram's native Back button in sync with the same history.
+try{
+  const backButton=tg()?.BackButton;
+  backButton?.onClick?.(()=>{if(canSwipeBack())history.back()});
+  const syncTelegramBack=()=>{if(!backButton)return;canSwipeBack()?backButton.show():backButton.hide()};
+  window.addEventListener("popstate",syncTelegramBack);
+  const originalView=view;
+  view=function(){const result=originalView();syncTelegramBack();return result};
+}catch(_){ }
 const q=new URLSearchParams(location.search),preset=q.get("service");if(preset&&service(preset)){state.service=preset;state.route="calendar"}history.replaceState({route:state.route},"",location.href);view();
 })();
